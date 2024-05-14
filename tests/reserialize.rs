@@ -24,7 +24,7 @@ COMPLETED:20140709T091011Z\r
 DTSTAMP:20190307T181159\r
 DUE:20140708T091011\r
 PERCENT-COMPLETE:95\r
-SUMMARY:A Todo\r
+SUMMARY:A Todo\\; very important!\r
 UID:todouid\r
 END:VTODO\r
 BEGIN:VALARM\r
@@ -33,8 +33,8 @@ ACTION:EMAIL\r
 ATTENDEE:mailto:john_doe@example.com\r
 SUMMARY:*** REMINDER: SEND AGENDA FOR WEEKLY STAFF MEETING ***\r
 DESCRIPTION:A draft agenda needs to be sent out to the attendees to the wee\r
- kly managers meeting (MGR-LIST). Attached is a pointer the document templat\r
- e for the agenda file.\r
+ kly managers meeting (MGR\\\\-LIST). Attached is a pointer the document templ\r
+ ate for the agenda file\\, with some small modifications.\r
 ATTACH;FMTTYPE=application/msword:http://example.com/templates/agenda.doc\r
 END:VALARM\r
 END:VCALENDAR\r
