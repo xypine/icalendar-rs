@@ -118,3 +118,18 @@ fn test_unfold2() {
     assert_eq!(unfold(input1).lines().collect::<Vec<_>>(), expected);
     assert_eq!(unfold(input2).lines().collect::<Vec<_>>(), expected);
 }
+
+pub fn unescape(input: &str) -> String {
+    input
+        .replace("\\\\", "\\")
+        .replace("\\;", ";")
+        .replace("\\,", ",")
+}
+
+pub fn escape(input: &str) -> String {
+    println!("escaping {}", input);
+    input
+        .replace('\\', "\\\\")
+        .replace(';', "\\;")
+        .replace(',', "\\,")
+}

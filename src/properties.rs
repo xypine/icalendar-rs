@@ -4,6 +4,8 @@ use std::{
     mem,
 };
 
+use crate::parser::escape;
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 /// key-value pairs inside of `Property`s
 pub struct Parameter {
@@ -147,9 +149,9 @@ impl Property {
 
         write!(line, "{}", self.key)?;
         for Parameter { key, val: value } in self.params.values() {
-            write!(line, ";{}={}", key, value)?;
+            write!(line, ";{}={}", key, escape(value))?;
         }
-        write!(line, ":{}", self.val)?;
+        write!(line, ":{}", escape(&self.val))?;
         write_crlf!(out, "{}", fold_line(&line))?;
         Ok(())
     }

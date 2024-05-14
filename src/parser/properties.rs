@@ -3,7 +3,10 @@ use std::{
     str::FromStr,
 };
 
-use crate::{parser::utils::valid_key_sequence_cow, properties::fold_line};
+use crate::{
+    parser::{escape, utils::valid_key_sequence_cow},
+    properties::fold_line,
+};
 
 use super::{
     parameters::{parameters, Parameter},
@@ -74,7 +77,7 @@ impl Property<'_> {
                 write!(line, ";{}", key.as_str())?;
             }
         }
-        write!(line, ":{}", self.val.as_str())?;
+        write!(line, ":{}", escape(self.val.as_str()))?;
         write_crlf!(out, "{}", fold_line(&line))?;
         Ok(())
     }

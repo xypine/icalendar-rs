@@ -1,6 +1,8 @@
 use crate::calendar::CalendarComponent;
 
-use super::{components::LikeComponent, read_calendar, unfold, Component, Property};
+use super::{
+    components::LikeComponent, read_calendar, unfold, utils::unescape, Component, Property,
+};
 use core::{fmt, str::FromStr};
 
 /// Helper-type for reserialization
@@ -95,7 +97,7 @@ impl FromStr for crate::Calendar {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let from_parsed = crate::Calendar::from(read_calendar(&unfold(s))?);
+        let from_parsed = crate::Calendar::from(read_calendar(&unfold(&unescape(s)))?);
         Ok(from_parsed)
     }
 }
