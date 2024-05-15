@@ -1,4 +1,4 @@
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Duration, NaiveDate, NaiveTime, Utc};
 use uuid::Uuid;
 
 use std::{collections::BTreeMap, fmt, mem};
@@ -19,6 +19,8 @@ pub use event::*;
 pub use other::*;
 pub use todo::*;
 pub use venue::*;
+
+use self::date_time::parse_duration;
 
 #[derive(Debug, Default, PartialEq, Eq, Clone)]
 pub(crate) struct InnerComponent {
@@ -179,6 +181,28 @@ pub trait Component {
     /// Gets the [`DTEND`](https://datatracker.ietf.org/doc/html/rfc5545#section-3.8.2.2) [`Property`]
     fn get_end(&self) -> Option<DatePerhapsTime> {
         DatePerhapsTime::from_property(self.properties().get("DTEND")?)
+    }
+
+    fn get_duration(&self) -> Option<Duration> {
+        parse_duration(self.properties().get("DURATION")?.value())
+    }
+
+    #[cfg(feature = "chrono-tz")]
+    fn get_end_auto(&self) -> Option<DateTime<Utc>> {
+        fn flatten_caldt(dt: DatePerhapsTime) -> Option<DateTime<Utc>> {
+            match dt {
+                DatePerhapsTime::Date(date) => date.and_time(NaiveTime::MIN).into(),
+                DatePerhapsTime::DateTime(dt) => dt,
+            }
+            .try_into_utc()
+        }
+        if let Some(end) = self.get_end() {
+            return flatten_caldt(end);
+        }
+        let start = flatten_caldt(self.get_start()?)?;
+        let duration = self.get_duration()?;
+        let end = start + duration;
+        Some(end)
     }
 
     /// Defines the relative priority.
