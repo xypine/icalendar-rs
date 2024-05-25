@@ -12,6 +12,7 @@ use super::{
     parameters::{parameters, Parameter},
     parsed_string::ParseString,
     utils::property_key,
+    ALLOWED_KEYS_TO_ESCAPE,
 };
 use nom::{
     branch::alt,
@@ -28,7 +29,7 @@ use nom::error::ErrorKind;
 
 /// [RFC-5545](https://datatracker.ietf.org/doc/html/rfc5545) states that the following
 /// "MAY occur more than once" in a VEVENT, VTODO, VJOURNAL, and VFREEBUSY.
-/// Note: A VJOURNAL can also contain multiple DECRIPTION but this is not covered here.
+/// Note: A VJOURNAL can also contain multiple DESCRIPTION but this is not covered here.
 const MULTIS: [&str; 13] = [
     "ATTACH",
     "ATTENDEE",
@@ -72,12 +73,22 @@ impl Property<'_> {
         write!(line, "{}", self.name.as_str())?;
         for Parameter { key, val } in &self.params {
             if let Some(val) = val {
-                write!(line, ";{}={}", key.as_str(), val.as_str())?;
+                let value = if ALLOWED_KEYS_TO_ESCAPE.contains(&key.as_str()) {
+                    escape(val.as_str())
+                } else {
+                    val.to_string()
+                };
+                write!(line, ";{}={}", key.as_str(), value)?;
             } else {
                 write!(line, ";{}", key.as_str())?;
             }
         }
-        write!(line, ":{}", escape(self.val.as_str()))?;
+        let value = if ALLOWED_KEYS_TO_ESCAPE.contains(&self.name.as_str()) {
+            escape(self.val.as_str())
+        } else {
+            self.val.to_string()
+        };
+        write!(line, ":{}", value)?;
         write_crlf!(out, "{}", fold_line(&line))?;
         Ok(())
     }

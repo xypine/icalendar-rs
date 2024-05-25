@@ -4,7 +4,7 @@ use std::{
     mem,
 };
 
-use crate::parser::escape;
+use crate::parser::{escape, ALLOWED_KEYS_TO_ESCAPE};
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 /// key-value pairs inside of `Property`s
@@ -149,9 +149,19 @@ impl Property {
 
         write!(line, "{}", self.key)?;
         for Parameter { key, val: value } in self.params.values() {
-            write!(line, ";{}={}", key, escape(value))?;
+            let value = if ALLOWED_KEYS_TO_ESCAPE.contains(&key.as_str()) {
+                escape(value)
+            } else {
+                value.clone()
+            };
+            write!(line, ";{}={}", key, value)?;
         }
-        write!(line, ":{}", escape(&self.val))?;
+        let value = if ALLOWED_KEYS_TO_ESCAPE.contains(&self.key.as_str()) {
+            escape(&self.val)
+        } else {
+            self.val.clone()
+        };
+        write!(line, ":{}", value)?;
         write_crlf!(out, "{}", fold_line(&line))?;
         Ok(())
     }

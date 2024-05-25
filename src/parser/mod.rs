@@ -43,7 +43,7 @@ pub use properties::Property;
 use components::*;
 
 pub use utils::unfold;
-pub use utils::{escape, unescape};
+pub use utils::{escape, unescape, ALLOWED_KEYS_TO_ESCAPE};
 
 /// Parse iCalendar file content into an array of [`Component`]s
 ///
