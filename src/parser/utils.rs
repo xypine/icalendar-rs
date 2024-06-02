@@ -120,10 +120,7 @@ fn test_unfold2() {
 }
 
 pub fn unescape(input: &str) -> String {
-    input
-        .replace("\\\\", "\\")
-        .replace("\\;", ";")
-        .replace("\\,", ",")
+    input.replace("\\;", ";").replace("\\,", ",")
 }
 
 pub const ALLOWED_KEYS_TO_ESCAPE: [&str; 6] = [
@@ -136,8 +133,5 @@ pub const ALLOWED_KEYS_TO_ESCAPE: [&str; 6] = [
 ];
 pub fn escape(input: &str) -> String {
     println!("escaping {}", input);
-    input
-        .replace('\\', "\\\\")
-        .replace(';', "\\;")
-        .replace(',', "\\,")
+    input.replace(';', "\\;").replace(',', "\\,")
 }
