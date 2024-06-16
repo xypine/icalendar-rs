@@ -126,6 +126,5 @@ pub fn unescape(input: &str) -> String {
 pub const ALLOWED_KEYS_TO_ESCAPE: [&str; 5] =
     ["SUMMARY", "LOCATION", "DESCRIPTION", "COMMENT", "URL"];
 pub fn escape(input: &str) -> String {
-    println!("escaping {}", input);
     input.replace(';', "\\;").replace(',', "\\,")
 }
